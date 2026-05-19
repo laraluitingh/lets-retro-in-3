@@ -1,6 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from routers import auth, boards, cards, columns, teams, votes
+
 app = FastAPI(title="Lets Retro In 3 API")
 
 app.add_middleware(
@@ -10,6 +12,13 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.include_router(auth.router)
+app.include_router(teams.router)
+app.include_router(boards.router)
+app.include_router(columns.router)
+app.include_router(cards.router)
+app.include_router(votes.router)
 
 
 @app.get("/")
