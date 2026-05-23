@@ -12,7 +12,9 @@ async function request(path, options = {}) {
   const res = await fetch(`${BASE_URL}${path}`, { ...options, headers })
   if (!res.ok) {
     const err = await res.json().catch(() => ({ detail: 'Unknown error' }))
-    throw new Error(err.detail || 'Request failed')
+    const error = new Error(err.detail || 'Request failed')
+    error.status = res.status
+    throw error
   }
   if (res.status === 204) return null
   return res.json()
@@ -77,3 +79,18 @@ export const deleteCard = (columnId, cardId) =>
 // Votes
 export const toggleVote = (cardId) =>
   request(`/cards/${cardId}/vote/`, { method: 'POST' })
+
+// Board sharing
+export const getBoardPreview = (boardId) =>
+  fetch(`${BASE_URL}/boards/${boardId}/preview`).then(async (res) => {
+    if (!res.ok) throw new Error('Board not found')
+    return res.json()
+  })
+
+export const joinBoard = (boardId) =>
+  request(`/boards/${boardId}/join`, { method: 'POST' })
+
+// Action items
+export const getActionItems = (teamId) => request(`/teams/${teamId}/action-items`)
+export const toggleActionItemDone = (teamId, cardId) =>
+  request(`/teams/${teamId}/action-items/${cardId}/toggle-done`, { method: 'PATCH' })

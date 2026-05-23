@@ -1,11 +1,13 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { registerUser, loginUser } from '../api/client'
 import { useAuth } from '../context/AuthContext'
 
 export default function RegisterPage() {
   const { login } = useAuth()
   const navigate = useNavigate()
+  const location = useLocation()
+  const from = location.state?.from?.pathname ?? '/teams'
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -24,7 +26,7 @@ export default function RegisterPage() {
       })
       const user = await res.json()
       login(access_token, user)
-      navigate('/teams')
+      navigate(from, { replace: true })
     } catch (err) {
       setError(err.message)
     } finally {

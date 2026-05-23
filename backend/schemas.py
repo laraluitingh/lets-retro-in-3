@@ -59,6 +59,12 @@ class BoardOut(BaseModel):
 
     model_config = {"from_attributes": True}
 
+class BoardPreviewOut(BaseModel):
+    id: int
+    title: str
+    team_id: int
+    team_name: str
+
 
 # ── Columns ───────────────────────────────────────────────────────────────────
 
@@ -91,6 +97,7 @@ class CardOut(BaseModel):
     id: int
     column_id: int
     body: str
+    done: bool
     author_id: int
     author_name: str
     vote_count: int
@@ -98,6 +105,19 @@ class CardOut(BaseModel):
     updated_at: datetime
 
     model_config = {"from_attributes": True}
+
+
+class ActionItemOut(BaseModel):
+    id: int
+    body: str
+    done: bool
+    author_id: int
+    author_name: str
+    vote_count: int
+    board_id: int
+    board_title: str
+    column_id: int
+    created_at: datetime
 
 
 # ── Votes ─────────────────────────────────────────────────────────────────────

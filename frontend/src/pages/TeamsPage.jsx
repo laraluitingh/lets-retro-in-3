@@ -63,7 +63,7 @@ export default function TeamsPage() {
               <div
                 key={team.id}
                 className="team-card"
-                onClick={() => navigate(`/teams/${team.id}/boards`)}
+                onClick={() => navigate(`/teams/${team.id}/boards`, { state: { teamName: team.name } })}
               >
                 <div className="team-card-icon">👥</div>
                 <h2>{team.name}</h2>

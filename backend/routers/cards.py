@@ -29,6 +29,7 @@ def _card_out(card: Card) -> CardOut:
         id=card.id,
         column_id=card.column_id,
         body=card.body,
+        done=card.done,
         author_id=card.author_id,
         author_name=card.author.name,
         vote_count=len(card.votes),

@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useParams, useLocation } from 'react-router-dom'
 import { getBoards, createBoard, deleteBoard } from '../api/client'
 import Navbar from '../components/Navbar'
 
 export default function BoardsPage() {
   const { teamId } = useParams()
   const navigate = useNavigate()
+  const location = useLocation()
   const [boards, setBoards] = useState([])
   const [newTitle, setNewTitle] = useState('')
   const [error, setError] = useState('')
@@ -47,6 +48,12 @@ export default function BoardsPage() {
         <button className="btn-ghost" onClick={() => navigate('/teams')}>← Back to teams</button>
         <div className="page-header">
           <h1>Boards</h1>
+          <button
+            className="btn-action-items"
+            onClick={() => navigate(`/teams/${teamId}/action-items`, { state: { teamName: location.state?.teamName } })}
+          >
+            ✅ Action Items
+          </button>
         </div>
 
         <form onSubmit={handleCreate} className="inline-form">
