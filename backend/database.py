@@ -1,8 +1,11 @@
+import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 from models import Base
 
-DATABASE_URL = "postgresql+psycopg2://retro:retro@localhost:5432/retro"
+_raw_url = os.environ.get("DATABASE_URL", "postgresql+psycopg2://retro:retro@localhost:5432/retro")
+# Railway provides postgres:// but SQLAlchemy needs postgresql+psycopg2://
+DATABASE_URL = _raw_url.replace("postgres://", "postgresql+psycopg2://", 1)
 
 engine = create_engine(DATABASE_URL)
 

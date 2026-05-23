@@ -1,3 +1,4 @@
+import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -5,9 +6,11 @@ from routers import action_items, auth, board_access, boards, cards, columns, te
 
 app = FastAPI(title="Lets Retro In 3 API")
 
+_frontend_url = os.environ.get("FRONTEND_URL", "http://localhost:5173")
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
+    allow_origins=[_frontend_url],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

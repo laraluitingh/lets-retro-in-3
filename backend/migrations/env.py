@@ -14,6 +14,13 @@ config = context.config
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
+import os
+
+# Override DB URL from environment (Railway injects DATABASE_URL)
+_raw_url = os.environ.get("DATABASE_URL")
+if _raw_url:
+    config.set_main_option("sqlalchemy.url", _raw_url.replace("postgres://", "postgresql+psycopg2://", 1))
+
 # add your model's MetaData object here
 # for 'autogenerate' support
 from models import Base
