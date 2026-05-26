@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
-import { loginUser } from '../api/client'
+import { loginUser, getMe } from '../api/client'
 import { useAuth } from '../context/AuthContext'
 
 export default function LoginPage() {
@@ -19,10 +19,8 @@ export default function LoginPage() {
     setLoading(true)
     try {
       const { access_token } = await loginUser(email, password)
-      const res = await fetch('http://localhost:8000/auth/me', {
-        headers: { Authorization: `Bearer ${access_token}` },
-      })
-      const user = await res.json()
+      localStorage.setItem('token', access_token)
+      const user = await getMe()
       login(access_token, user)
       navigate(from, { replace: true })
     } catch (err) {
