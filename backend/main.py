@@ -1,8 +1,11 @@
 import os
+from dotenv import load_dotenv
+load_dotenv()
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from routers import action_items, auth, board_access, boards, cards, columns, teams, votes
+from routers import action_items, auth, board_access, boards, cards, columns, summarize, teams, votes
 
 app = FastAPI(title="Lets Retro In 3 API")
 
@@ -24,6 +27,7 @@ app.include_router(board_access.router)
 app.include_router(columns.router)
 app.include_router(cards.router)
 app.include_router(votes.router)
+app.include_router(summarize.router)
 
 
 @app.get("/")

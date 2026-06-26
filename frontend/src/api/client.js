@@ -90,6 +90,9 @@ export const getBoardPreview = (boardId) =>
 export const joinBoard = (boardId) =>
   request(`/boards/${boardId}/join`, { method: 'POST' })
 
+// AI Summarise
+export const summarizeBoard = (boardId) => request(`/boards/${boardId}/summarize`)
+
 // Action items
 export const getActionItems = (teamId) => request(`/teams/${teamId}/action-items`)
 export const toggleActionItemDone = (teamId, cardId) =>

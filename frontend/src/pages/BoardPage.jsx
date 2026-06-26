@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams, useLocation } from 'react-router-dom'
-import { getColumns, createColumn, updateColumn, deleteColumn, getBoardPreview, joinBoard } from '../api/client'
+import { getColumns, createColumn, updateColumn, deleteColumn, getBoardPreview, joinBoard, summarizeBoard } from '../api/client'
 import Navbar from '../components/Navbar'
 import Column from '../components/Column'
 
@@ -18,6 +18,12 @@ export default function BoardPage() {
 
   // Share button state
   const [copied, setCopied] = useState(false)
+
+  // AI summarise state
+  const [summary, setSummary] = useState('')
+  const [summarizing, setSummarizing] = useState(false)
+  const [summaryError, setSummaryError] = useState('')
+  const [showSummary, setShowSummary] = useState(false)
 
   // Join-board flow: null | { id, title, team_id, team_name }
   const [joinInfo, setJoinInfo] = useState(null)
@@ -46,6 +52,21 @@ export default function BoardPage() {
       })
       .finally(() => setLoading(false))
   }, [boardId])
+
+  async function handleSummarize() {
+    setSummarizing(true)
+    setSummaryError('')
+    setSummary('')
+    setShowSummary(true)
+    try {
+      const data = await summarizeBoard(boardId)
+      setSummary(data.summary)
+    } catch (e) {
+      setSummaryError(e.message)
+    } finally {
+      setSummarizing(false)
+    }
+  }
 
   async function handleShare() {
     const url = window.location.href
@@ -159,6 +180,9 @@ export default function BoardPage() {
           <button className="btn-share" onClick={handleShare}>
             {copied ? '✓ Copied!' : '🔗 Share'}
           </button>
+          <button className="btn-ai-summarize" onClick={handleSummarize} disabled={summarizing}>
+            {summarizing ? '✨ Summarizing…' : '✨ Summarize'}
+          </button>
           <button
             className="btn-secondary btn-sm"
             onClick={() => setShowAddCol((v) => !v)}
@@ -206,6 +230,26 @@ export default function BoardPage() {
                 <div className="empty-state-icon">📋</div>
                 <h3>No columns yet</h3>
                 <p>Click "+ Add column" to get started.</p>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {showSummary && (
+        <div className="summary-overlay" onClick={() => setShowSummary(false)}>
+          <div className="summary-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="summary-modal-header">
+              <h2>✨ AI Summary</h2>
+              <button className="summary-close" onClick={() => setShowSummary(false)}>✕</button>
+            </div>
+            {summarizing && <p className="summary-loading">Generating summary…</p>}
+            {summaryError && <p className="error-msg">{summaryError}</p>}
+            {summary && (
+              <div className="summary-body">
+                {summary.split('\n').map((line, i) => (
+                  <p key={i}>{line}</p>
+                ))}
               </div>
             )}
           </div>
